@@ -71,4 +71,44 @@ describe('getStableElementKey', () => {
     document.body.appendChild(button);
     expect(getStableElementKey(button)).toBe(getStableElementKey(button));
   });
+
+  it('uses aria-labelledby when no aria-label is set', () => {
+    const label = make('span', { id: 'lbl-1' }, 'Open menu');
+    const button = make('button', { 'aria-labelledby': 'lbl-1' });
+    document.body.append(label, button);
+    const withLabelledBy = getStableElementKey(button);
+
+    button.setAttribute('aria-labelledby', 'lbl-missing');
+    const withMissingTarget = getStableElementKey(button);
+
+    expect(withLabelledBy).not.toBe(withMissingTarget);
+  });
+
+  it('falls back to placeholder when no text content is present', () => {
+    const input = make('input', { placeholder: 'Search…' });
+    document.body.appendChild(input);
+    const withPlaceholder = getStableElementKey(input);
+
+    input.setAttribute('placeholder', 'Find…');
+    const withDifferentPlaceholder = getStableElementKey(input);
+
+    expect(withPlaceholder).not.toBe(withDifferentPlaceholder);
+  });
+
+  it('falls back to title when no other accessible name source exists', () => {
+    const button = make('button', { title: 'Close' });
+    document.body.appendChild(button);
+    const withTitle = getStableElementKey(button);
+
+    button.setAttribute('title', 'Dismiss');
+    const withDifferentTitle = getStableElementKey(button);
+
+    expect(withTitle).not.toBe(withDifferentTitle);
+  });
+
+  it('handles elements with no accessible name source', () => {
+    const button = make('button');
+    document.body.appendChild(button);
+    expect(getStableElementKey(button)).toMatch(/^[0-9a-f]{8}$/);
+  });
 });

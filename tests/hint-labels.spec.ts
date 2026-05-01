@@ -74,4 +74,29 @@ describe('assignHintLabels', () => {
   it('returns an empty map for an empty input', () => {
     expect(assignHintLabels([]).size).toBe(0);
   });
+
+  it('throws on a duplicate pinned label', () => {
+    const [a, b] = makeButtons(['A', 'B']);
+    const pinned = new Map<HTMLElement, string>([
+      [a!, 'XY'],
+      [b!, 'xy']
+    ]);
+    expect(() => assignHintLabels([a!, b!], { pinned })).toThrow(/duplicate pinned hint/i);
+  });
+
+  it('throws on a malformed pinned label', () => {
+    const [a] = makeButtons(['A']);
+    const pinned = new Map<HTMLElement, string>([[a!, '12']]);
+    expect(() => assignHintLabels([a!], { pinned })).toThrow(/invalid pinned hint/i);
+  });
+
+  it('throws when hintChars contains non-letters', () => {
+    const elements = makeButtons(['A']);
+    expect(() => assignHintLabels(elements, { hintChars: 'ab1' })).toThrow(/alphabetic/i);
+  });
+
+  it('throws when there are more elements than possible labels', () => {
+    const elements = makeButtons(Array.from({ length: 9 }, (_v, i) => `b${i}`));
+    expect(() => assignHintLabels(elements, { hintChars: 'ab' })).toThrow(/ran out of hint labels/i);
+  });
 });

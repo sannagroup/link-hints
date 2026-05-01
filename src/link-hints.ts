@@ -3,26 +3,8 @@ import { Emitter } from './utils/emitter.js';
 import { assignHintLabels } from './utils/hint-labels.js';
 import { getStableElementKey } from './utils/stable-element-key.js';
 import { performTargetAction } from './utils/click-simulator.js';
+import { isEditableElement } from './utils/editable.js';
 import type { LinkHintsOptions, LinkHintsState } from './types.js';
-
-const TEXT_INPUT_TYPES_TO_IGNORE = ['button', 'submit', 'reset', 'checkbox', 'radio'];
-
-const isEditableElement = (element: Element | null): boolean => {
-  if (!element) return false;
-  if (element.tagName === 'INPUT') {
-    const type = (element as HTMLInputElement).type;
-    return !TEXT_INPUT_TYPES_TO_IGNORE.includes(type);
-  }
-  if (element.tagName === 'TEXTAREA' || element.tagName === 'SELECT') {
-    return true;
-  }
-  return (element as HTMLElement).isContentEditable;
-};
-
-const getRouteKey = (): string => {
-  if (typeof window === 'undefined') return '';
-  return window.location.pathname;
-};
 
 /**
  * Vimium-style hint-mode state machine. Pure JS — owns no DOM beyond
@@ -84,7 +66,7 @@ export class LinkHints {
 
     const hardPinned = this.collectPinnedHints(elements);
 
-    const routeKey = getRouteKey();
+    const routeKey = typeof window === 'undefined' ? '' : window.location.pathname;
     const remembered = this.previousAssignmentsByRoute.get(routeKey) ?? new Map<string, string>();
 
     const stableKeys = new Map<HTMLElement, string>();
