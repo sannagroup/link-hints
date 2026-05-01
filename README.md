@@ -49,28 +49,21 @@ That's it. The page is now hintable.
 ### Svelte 5
 
 ```svelte
-<!-- src/lib/LinkHints.svelte -->
+<!-- src/routes/+layout.svelte -->
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { createLinkHints, type LinkHintsOptions } from '@sannagroup/link-hints';
+  import { createLinkHints } from '@sannagroup/link-hints';
   import '@sannagroup/link-hints/style.css';
 
-  const props: LinkHintsOptions = $props();
+  let { children } = $props();
 
   onMount(() => {
-    const hints = createLinkHints(props);
+    const hints = createLinkHints();
     return () => hints.dispose();
   });
 </script>
-```
 
-```svelte
-<!-- Use it once, near the top of your app's layout -->
-<script lang="ts">
-  import LinkHints from '$lib/LinkHints.svelte';
-</script>
-
-<LinkHints />
+{@render children()}
 ```
 
 ### React
