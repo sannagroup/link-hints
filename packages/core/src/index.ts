@@ -1,5 +1,5 @@
 import { BadgeRenderer } from './badge-renderer';
-import { LinkHintsController, defaultOnActivate } from './controller';
+import { LinkHints, defaultOnActivate } from './link-hints';
 import type { LinkHintsHandle, LinkHintsOptions, LinkHintsState } from './types';
 
 const defaultPinnedHint = (element: HTMLElement): string | undefined =>
@@ -23,27 +23,27 @@ const resolveOptions = (options: LinkHintsOptions = {}): Required<LinkHintsOptio
  */
 export const createLinkHints = (options: LinkHintsOptions = {}): LinkHintsHandle => {
   const resolved = resolveOptions(options);
-  const controller = new LinkHintsController(resolved);
+  const linkHints = new LinkHints(resolved);
   const renderer = new BadgeRenderer();
 
-  const unsubscribe = controller.subscribe((state) => renderer.apply(state));
-  controller.start();
+  const unsubscribe = linkHints.subscribe((state) => renderer.apply(state));
+  linkHints.start();
 
   return {
-    activate: () => controller.activate(),
-    cancel: () => controller.cancel(),
-    subscribe: (listener) => controller.subscribe(listener),
-    getState: () => controller.getState(),
+    activate: () => linkHints.activate(),
+    cancel: () => linkHints.cancel(),
+    subscribe: (listener) => linkHints.subscribe(listener),
+    getState: () => linkHints.getState(),
     dispose: () => {
       unsubscribe();
       renderer.teardown();
-      controller.dispose();
+      linkHints.dispose();
     }
   };
 };
 
 export type { LinkHintsHandle, LinkHintsOptions, LinkHintsState };
-export { simulateClick, performTargetAction } from './click-simulator';
-export { findClickableElements } from './clickable-elements';
-export { assignHintLabels, DEFAULT_HINT_CHARS } from './hint-labels';
-export { getStableElementKey } from './stable-element-key';
+export { simulateClick, performTargetAction } from './utils/click-simulator';
+export { findClickableElements } from './utils/clickable-elements';
+export { assignHintLabels, DEFAULT_HINT_CHARS } from './utils/hint-labels';
+export { getStableElementKey } from './utils/stable-element-key';

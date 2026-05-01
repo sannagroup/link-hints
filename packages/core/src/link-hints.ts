@@ -1,8 +1,8 @@
-import { findClickableElements } from './clickable-elements';
-import { Emitter } from './emitter';
-import { assignHintLabels } from './hint-labels';
-import { getStableElementKey } from './stable-element-key';
-import { performTargetAction } from './click-simulator';
+import { findClickableElements } from './utils/clickable-elements';
+import { Emitter } from './utils/emitter';
+import { assignHintLabels } from './utils/hint-labels';
+import { getStableElementKey } from './utils/stable-element-key';
+import { performTargetAction } from './utils/click-simulator';
 import type { LinkHintsOptions, LinkHintsState } from './types';
 
 const TEXT_INPUT_TYPES_TO_IGNORE = ['button', 'submit', 'reset', 'checkbox', 'radio'];
@@ -29,7 +29,7 @@ const getRouteKey = (): string => {
  * dispatching events and inspecting the document. The badge renderer
  * subscribes to state changes and updates the DOM separately.
  */
-export class LinkHintsController {
+export class LinkHints {
   private state: LinkHintsState = {
     status: 'idle',
     hints: new Map(),

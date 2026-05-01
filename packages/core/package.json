@@ -20,7 +20,7 @@
     "./style.css": "./dist/style.css"
   },
   "scripts": {
-    "build": "rm -rf dist && tsc -p tsconfig.build.json && cp src/style.css dist/style.css",
+    "build": "rm -rf dist && tsc -p tsconfig.build.json && cp src/style/style.css dist/style.css",
     "test": "vitest run",
     "typecheck": "tsc -p tsconfig.json"
   },

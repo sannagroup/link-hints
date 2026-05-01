@@ -7,17 +7,17 @@ const REMAINING_CLASS = 'link-hints-badge__remaining';
 
 /**
  * Renders hint badges into a portal `<div>` appended to `document.body`.
- * Subscribes to controller state changes and diffs the current set of
- * badges against the new state on each update.
+ * Subscribes to state changes and diffs the current set of badges
+ * against the new state on each update.
  *
  * Pure DOM. Framework-agnostic. The renderer never reads its own DOM —
- * the controller is the single source of truth.
+ * the `LinkHints` instance is the single source of truth.
  */
 export class BadgeRenderer {
   private portal: HTMLDivElement | undefined;
   private nodes = new Map<HTMLElement, HTMLSpanElement>();
 
-  /** Apply a new state. Called by the controller's emitter. */
+  /** Apply a new state. Called via the emitter. */
   apply(state: LinkHintsState): void {
     if (state.status === 'idle') {
       this.teardown();

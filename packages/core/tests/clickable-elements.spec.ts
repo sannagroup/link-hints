@@ -1,5 +1,5 @@
 import { describe, expect, it, beforeEach } from 'vitest';
-import { findClickableElements } from '../src/clickable-elements';
+import { findClickableElements } from '../src/utils/clickable-elements';
 
 const stubViewport = (width = 1024, height = 768): void => {
   Object.defineProperty(window, 'innerWidth', {

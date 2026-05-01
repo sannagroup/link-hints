@@ -1,5 +1,5 @@
 import { describe, expect, it, beforeEach } from 'vitest';
-import { getStableElementKey } from '../src/stable-element-key';
+import { getStableElementKey } from '../src/utils/stable-element-key';
 
 const make = <K extends keyof HTMLElementTagNameMap>(
   tag: K,

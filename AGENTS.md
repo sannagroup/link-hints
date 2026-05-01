@@ -16,14 +16,16 @@ hint-mode/
 │   ├── src/
 │   │   ├── index.ts                     public exports
 │   │   ├── types.ts                     LinkHintsOptions, LinkHintsHandle, LinkHintsState
-│   │   ├── controller.ts                state machine + emitter
+│   │   ├── link-hints.ts                LinkHints class — state machine + emitter
 │   │   ├── badge-renderer.ts            vanilla DOM rendering
-│   │   ├── click-simulator.ts           Vimium's 7-event simulateClick + performTargetAction
-│   │   ├── clickable-elements.ts        Vimium's getLocalHintsForElement, ported
-│   │   ├── hint-labels.ts               label generation + assignment
-│   │   ├── stable-element-key.ts        deterministic key for muscle-memory ordering
-│   │   ├── emitter.ts                   tiny synchronous Emitter, no deps
-│   │   └── style.css                    default theme + CSS variables
+│   │   ├── style/
+│   │   │   └── style.css                default theme + CSS variables
+│   │   └── utils/                       stateless helpers
+│   │       ├── clickable-elements.ts    Vimium's getLocalHintsForElement, ported
+│   │       ├── click-simulator.ts       Vimium's 7-event simulateClick + performTargetAction
+│   │       ├── hint-labels.ts           label generation + assignment
+│   │       ├── stable-element-key.ts    deterministic key for muscle-memory ordering
+│   │       └── emitter.ts               tiny synchronous Emitter, no deps
 │   ├── tests/                           vitest specs (JSDOM)
 │   ├── tsconfig.json                    typecheck config
 │   ├── tsconfig.build.json              build config
@@ -49,7 +51,7 @@ hint-mode/
 - **Workspaces:** Bun workspaces. Only `packages/core` publishes; `examples/*` are private.
 - **Type-check:** `tsc -p tsconfig.json` (no emit, covers `src/` and `tests/`).
 - **Test:** [Vitest](https://vitest.dev) with `jsdom`.
-- **Build:** `tsc -p tsconfig.build.json` then `cp src/style.css dist/style.css`.
+- **Build:** `tsc -p tsconfig.build.json` then `cp src/style/style.css dist/style.css`.
 - **Lint:** Prettier only.
 - **Versioning:** [Changesets](https://github.com/changesets/changesets). `bun changeset` records a versioned change.
 
@@ -86,9 +88,9 @@ These are non-negotiable.
 ### Architectural rules
 
 - **Zero framework dependencies.** Don't add a peer dep on Svelte/React/Vue/etc. The library is meant to be wrapped by consumers; the README shows them how. New framework integrations belong in the README's "Framework integration" section, not as a new package.
-- **Don't break the controller / renderer split.** The controller mutates state and emits via the `Emitter`. The renderer subscribes and updates DOM. The renderer never reads its own DOM.
-- **The detection rules in `clickable-elements.ts` mirror Vimium's `getLocalHintsForElement`.** If you change them, document precisely what diverges and why.
-- **The click sequence in `click-simulator.ts` mirrors Vimium's `simulateClick`.** Same constraint.
+- **Don't break the `LinkHints` / renderer split.** The `LinkHints` instance (in `src/link-hints.ts`) mutates state and emits via the `Emitter`. The renderer subscribes and updates DOM. The renderer never reads its own DOM.
+- **The detection rules in `utils/clickable-elements.ts` mirror Vimium's `getLocalHintsForElement`.** If you change them, document precisely what diverges and why.
+- **The click sequence in `utils/click-simulator.ts` mirrors Vimium's `simulateClick`.** Same constraint.
 - **No `localStorage` / `sessionStorage` / cookies.** Per-route stability is in-memory only.
 - **No global side effects on import.**
 - **`dispose()` must be idempotent.**
