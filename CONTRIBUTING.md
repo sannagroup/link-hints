@@ -26,19 +26,19 @@ cd link-hints
 bun install
 ```
 
-The repo is a Bun workspace monorepo. The only published package lives at [`packages/core`](./packages/core); examples under `examples/*` are private.
+The repo publishes a single package, `@sannagroup/link-hints`, from the root. `examples/vanilla` is a separate, private demo that depends on the lib via `file:../..` and has its own `node_modules`.
 
 ## Local development
 
 ```bash
 # Run the test suite once
-bun run --filter='./packages/*' test
+bun run test
 
 # Type-check
-bun run --filter='./packages/*' typecheck
+bun run typecheck
 
-# Build the dist/ for the core package
-bun run --filter='./packages/*' build
+# Build the dist/
+bun run build
 
 # Format code (writes changes)
 bun run format
@@ -47,10 +47,11 @@ bun run format
 bun run lint
 
 # Run the vanilla example at http://localhost:5173
+bun --cwd examples/vanilla install   # one-time
 bun --cwd examples/vanilla dev
 ```
 
-If you're iterating, the fastest loop is `cd packages/core && bun x vitest` (watch mode by default).
+If you're iterating, the fastest loop is `bun x vitest` (watch mode by default) from the repo root.
 
 ## Making a change
 
@@ -58,11 +59,11 @@ If you're iterating, the fastest loop is `cd packages/core && bun x vitest` (wat
    ```bash
    git checkout -b fix/menu-trigger-detection
    ```
-2. **Make your change** in `packages/core/src/`. Add or update tests in `packages/core/tests/`.
+2. **Make your change** in `src/`. Add or update tests in `tests/`.
 3. **Run the full check locally** before pushing:
    ```bash
-   bun run --filter='./packages/*' typecheck
-   bun run --filter='./packages/*' test
+   bun run typecheck
+   bun run test
    bun run lint
    ```
 4. **Add a changeset** (see next section).
@@ -126,7 +127,7 @@ Short version (full rules in [`AGENTS.md`](./AGENTS.md)):
 - Don't pass `view: window` to `MouseEvent` — JSDOM rejects it.
 - Each test cleans up in `beforeEach` (clear `document.body`, reset stubs).
 
-The existing tests in `packages/core/tests/` are the best reference. Copy a similar test as a starting point.
+The existing tests in `tests/` are the best reference. Copy a similar test as a starting point.
 
 ## Release process
 

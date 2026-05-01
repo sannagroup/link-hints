@@ -8,7 +8,7 @@
     "build": "vite build"
   },
   "dependencies": {
-    "@sannagroup/link-hints": "workspace:*"
+    "@sannagroup/link-hints": "file:../.."
   },
   "devDependencies": {
     "vite": "^6.0.0"

@@ -11,44 +11,41 @@ It is published as a single npm package at `@sannagroup/link-hints`. The package
 ## Repo layout
 
 ```
-hint-mode/
-├── packages/core/          → @sannagroup/link-hints (the only published package)
-│   ├── src/
-│   │   ├── index.ts                     public exports
-│   │   ├── types.ts                     LinkHintsOptions, LinkHintsHandle, LinkHintsState
-│   │   ├── link-hints.ts                LinkHints class — state machine + emitter
-│   │   ├── badge-renderer.ts            vanilla DOM rendering
-│   │   ├── style/
-│   │   │   └── style.css                default theme + CSS variables
-│   │   └── utils/                       stateless helpers
-│   │       ├── clickable-elements.ts    Vimium's getLocalHintsForElement, ported
-│   │       ├── click-simulator.ts       Vimium's 7-event simulateClick + performTargetAction
-│   │       ├── hint-labels.ts           label generation + assignment
-│   │       ├── stable-element-key.ts    deterministic key for muscle-memory ordering
-│   │       └── emitter.ts               tiny synchronous Emitter, no deps
-│   ├── tests/                           vitest specs (JSDOM)
-│   ├── tsconfig.json                    typecheck config
-│   ├── tsconfig.build.json              build config
-│   ├── vitest.config.ts                 jsdom env
-│   └── package.json
+link-hints/
+├── src/
+│   ├── index.ts                     public exports
+│   ├── types.ts                     LinkHintsOptions, LinkHintsHandle, LinkHintsState
+│   ├── link-hints.ts                LinkHints class — state machine + emitter
+│   ├── badge-renderer.ts            vanilla DOM rendering
+│   ├── style/
+│   │   └── style.css                default theme + CSS variables
+│   └── utils/                       stateless helpers
+│       ├── clickable-elements.ts    Vimium's getLocalHintsForElement, ported
+│       ├── click-simulator.ts       Vimium's 7-event simulateClick + performTargetAction
+│       ├── hint-labels.ts           label generation + assignment
+│       ├── stable-element-key.ts    deterministic key for muscle-memory ordering
+│       └── emitter.ts               tiny synchronous Emitter, no deps
+├── tests/                           vitest specs (JSDOM)
 ├── examples/
-│   └── vanilla/                         plain HTML + Vite, demonstrates the lib
-├── .changeset/                          Changesets — every PR with code changes
-│                                        should add one
+│   └── vanilla/                     plain HTML + Vite, depends on the lib via `file:../..`
+├── .changeset/                      Changesets — every PR with code changes
+│                                    should add one
 ├── .github/workflows/
-│   ├── ci.yml                           lint + typecheck + test + build on PR
-│   └── release.yml                      Changesets-driven publish on main
-├── tsconfig.base.json                   shared strict TS config
-├── README.md                            full user-facing docs
-├── LICENSE                              MIT
-├── NOTICE                               Vimium attribution — required by MIT
-└── package.json                         monorepo root, bun workspaces
+│   ├── ci.yml                       lint + typecheck + test + build on PR
+│   └── release.yml                  Changesets-driven publish on main
+├── tsconfig.json                    strict TS config (typecheck only)
+├── tsconfig.build.json              build config (extends tsconfig.json)
+├── vitest.config.ts                 jsdom env
+├── README.md                        full user-facing docs
+├── LICENSE                          MIT
+├── NOTICE                           Vimium attribution — required by MIT
+└── package.json                     the published @sannagroup/link-hints package
 ```
 
 ## Tooling
 
 - **Runtime/build:** [Bun](https://bun.sh) is the package manager.
-- **Workspaces:** Bun workspaces. Only `packages/core` publishes; `examples/*` are private.
+- **Single-package layout.** The repo publishes one package (`@sannagroup/link-hints`) from the root. `examples/vanilla` is a separate, private demo that depends on the lib via `file:../..` and is installed independently.
 - **Type-check:** `tsc -p tsconfig.json` (no emit, covers `src/` and `tests/`).
 - **Test:** [Vitest](https://vitest.dev) with `jsdom`.
 - **Build:** `tsc -p tsconfig.build.json` then `cp src/style/style.css dist/style.css`.
@@ -59,12 +56,13 @@ hint-mode/
 
 ```bash
 bun install
-bun run --filter='./packages/*' test
-bun run --filter='./packages/*' typecheck
-bun run --filter='./packages/*' build
+bun run test
+bun run typecheck
+bun run build
 bun run lint
 bun run format
 bun changeset
+bun --cwd examples/vanilla install   # one-time, the example has its own node_modules
 bun --cwd examples/vanilla dev
 ```
 
