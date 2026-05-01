@@ -1,6 +1,6 @@
 {
   "name": "@sannagroup/hint-mode",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Vimium-style keyboard hint navigation for any web page. Pure JS core + optional Svelte adapter via subpath.",
   "license": "MIT",
   "type": "module",
