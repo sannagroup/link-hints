@@ -155,4 +155,75 @@ describe('findClickableElements', () => {
     const result = findClickableElements(document.body);
     expect(result.map((element) => element.id)).toEqual(['outer']);
   });
+
+  it('drops "btn"-classed wrappers that contain a real clickable descendant', () => {
+    const wrapper = make('div', { id: 'wrapper', class: 'btn-shell' });
+    const inner = document.createElement('button');
+    inner.id = 'inner';
+    wrapper.appendChild(inner);
+    stubRect(inner);
+    const result = findClickableElements(document.body);
+    expect(result.map((element) => element.id)).toEqual(['inner']);
+  });
+
+  it('treats spans matched by other heuristics as possible false positives', () => {
+    const span = make('span', { id: 'span', role: 'button' });
+    const result = findClickableElements(document.body);
+    expect(result.map((element) => element.id)).toEqual(['span']);
+  });
+
+  it('finds <label> with an enabled control and skips orphan or disabled-control labels', () => {
+    const wired = make('label', { id: 'wired', for: 'wired-input' });
+    make('input', { id: 'wired-input', type: 'text' });
+
+    const orphan = make('label', { id: 'orphan' });
+
+    const disabled = make('label', { id: 'disabled-label', for: 'disabled-input' });
+    make('input', { id: 'disabled-input', type: 'text', disabled: '' });
+
+    const result = findClickableElements(document.body);
+    const ids = result.map((element) => element.id);
+    expect(ids).toContain('wired');
+    expect(ids).not.toContain('orphan');
+    expect(ids).not.toContain('disabled-label');
+    expect(disabled).toBeDefined();
+  });
+
+  it('finds <img> only when its cursor style is zoom-in / zoom-out', () => {
+    const zoomable = make('img', { id: 'zoomable' });
+    zoomable.style.cursor = 'zoom-in';
+    make('img', { id: 'plain' });
+    const result = findClickableElements(document.body);
+    expect(result.map((element) => element.id)).toEqual(['zoomable']);
+  });
+
+  it('skips aria-disabled elements', () => {
+    make('button', { id: 'enabled' });
+    make('button', { id: 'aria-disabled', 'aria-disabled': 'true' });
+    make('button', { id: 'aria-disabled-mixed', 'aria-disabled': 'TRUE' });
+    const result = findClickableElements(document.body);
+    expect(result.map((element) => element.id)).toEqual(['enabled']);
+  });
+
+  it('finds elements with an onclick attribute', () => {
+    make('div', { id: 'clickable', onclick: 'noop()' });
+    const result = findClickableElements(document.body);
+    expect(result.map((element) => element.id)).toEqual(['clickable']);
+  });
+
+  it('finds enabled textareas but skips disabled or readonly ones', () => {
+    make('textarea', { id: 'ta-enabled' });
+    make('textarea', { id: 'ta-disabled', disabled: '' });
+    make('textarea', { id: 'ta-readonly', readonly: '' });
+    const result = findClickableElements(document.body);
+    expect(result.map((element) => element.id)).toEqual(['ta-enabled']);
+  });
+
+  it('finds <details> and <summary>', () => {
+    make('details', { id: 'details' });
+    make('summary', { id: 'summary' });
+    const result = findClickableElements(document.body);
+    const ids = result.map((element) => element.id).sort();
+    expect(ids).toEqual(['details', 'summary']);
+  });
 });

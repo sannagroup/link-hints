@@ -1,3 +1,5 @@
+import { isContentEditable, isTextEntryInput } from './editable.js';
+
 /**
  * Dispatches the seven-event mouse + click sequence Vimium uses in
  * `lib/dom_utils.js#simulateClick`, so menus and popovers built on
@@ -36,8 +38,6 @@ export const simulateClick = (target: HTMLElement): void => {
   }
 };
 
-const TEXT_INPUT_TYPES_TO_IGNORE = ['button', 'submit', 'reset', 'checkbox', 'radio'];
-
 /**
  * Default `onActivate` implementation. Focuses text-entry targets so the
  * user can type immediately. Native `<input>` / `<select>` / `<object>` /
@@ -48,17 +48,14 @@ const TEXT_INPUT_TYPES_TO_IGNORE = ['button', 'submit', 'reset', 'checkbox', 'ra
 export const performTargetAction = (target: HTMLElement): void => {
   const tag = target.tagName.toLowerCase();
 
-  if (tag === 'textarea' || target.isContentEditable) {
+  if (tag === 'textarea' || isContentEditable(target)) {
     target.focus();
     return;
   }
 
-  if (tag === 'input') {
-    const type = (target as HTMLInputElement).type;
-    if (!TEXT_INPUT_TYPES_TO_IGNORE.includes(type)) {
-      target.focus();
-      return;
-    }
+  if (tag === 'input' && isTextEntryInput(target as HTMLInputElement)) {
+    target.focus();
+    return;
   }
 
   if (['input', 'select', 'object', 'embed'].includes(tag)) {
