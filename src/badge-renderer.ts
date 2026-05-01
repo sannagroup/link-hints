@@ -1,4 +1,4 @@
-import type { LinkHintsState } from './types';
+import type { LinkHintsState } from './types.js';
 
 const PORTAL_CLASS = 'link-hints-portal';
 const BADGE_CLASS = 'link-hints-badge';

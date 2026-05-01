@@ -1,4 +1,4 @@
-import { getStableElementKey } from './stable-element-key';
+import { getStableElementKey } from './stable-element-key.js';
 
 /** Vimium's home-row-weighted character set. Alphabetic only so digit input never collides. */
 export const DEFAULT_HINT_CHARS = 'sadfjklewcmpgh';

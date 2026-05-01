@@ -1,9 +1,9 @@
-import { findClickableElements } from './utils/clickable-elements';
-import { Emitter } from './utils/emitter';
-import { assignHintLabels } from './utils/hint-labels';
-import { getStableElementKey } from './utils/stable-element-key';
-import { performTargetAction } from './utils/click-simulator';
-import type { LinkHintsOptions, LinkHintsState } from './types';
+import { findClickableElements } from './utils/clickable-elements.js';
+import { Emitter } from './utils/emitter.js';
+import { assignHintLabels } from './utils/hint-labels.js';
+import { getStableElementKey } from './utils/stable-element-key.js';
+import { performTargetAction } from './utils/click-simulator.js';
+import type { LinkHintsOptions, LinkHintsState } from './types.js';
 
 const TEXT_INPUT_TYPES_TO_IGNORE = ['button', 'submit', 'reset', 'checkbox', 'radio'];
 

@@ -1,6 +1,6 @@
-import { BadgeRenderer } from './badge-renderer';
-import { LinkHints, defaultOnActivate } from './link-hints';
-import type { LinkHintsHandle, LinkHintsOptions, LinkHintsState } from './types';
+import { BadgeRenderer } from './badge-renderer.js';
+import { LinkHints, defaultOnActivate } from './link-hints.js';
+import type { LinkHintsHandle, LinkHintsOptions, LinkHintsState } from './types.js';
 
 const defaultPinnedHint = (element: HTMLElement): string | undefined =>
   element.dataset.hint ?? undefined;
@@ -43,7 +43,7 @@ export const createLinkHints = (options: LinkHintsOptions = {}): LinkHintsHandle
 };
 
 export type { LinkHintsHandle, LinkHintsOptions, LinkHintsState };
-export { simulateClick, performTargetAction } from './utils/click-simulator';
-export { findClickableElements } from './utils/clickable-elements';
-export { assignHintLabels, DEFAULT_HINT_CHARS } from './utils/hint-labels';
-export { getStableElementKey } from './utils/stable-element-key';
+export { simulateClick, performTargetAction } from './utils/click-simulator.js';
+export { findClickableElements } from './utils/clickable-elements.js';
+export { assignHintLabels, DEFAULT_HINT_CHARS } from './utils/hint-labels.js';
+export { getStableElementKey } from './utils/stable-element-key.js';
