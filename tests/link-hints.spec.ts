@@ -163,6 +163,28 @@ describe('createLinkHints', () => {
     expect(hints.getState().status).toBe('idle');
   });
 
+  it('cancels on a click outside', () => {
+    make('button', { id: 'a' }, 'A');
+    hints = createLinkHints();
+    hints.activate();
+    expect(hints.getState().status).toBe('active');
+
+    window.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+
+    expect(hints.getState().status).toBe('idle');
+    expect(document.querySelector('.link-hints-portal')).toBeNull();
+  });
+
+  it('cancels when the window loses focus', () => {
+    make('button', { id: 'a' }, 'A');
+    hints = createLinkHints();
+    hints.activate();
+
+    window.dispatchEvent(new Event('blur'));
+
+    expect(hints.getState().status).toBe('idle');
+  });
+
   it('subscribe receives state changes and unsubscribe stops them', () => {
     make('button', { id: 'a' }, 'A');
     hints = createLinkHints();

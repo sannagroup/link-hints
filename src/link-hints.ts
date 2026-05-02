@@ -27,7 +27,7 @@ export class LinkHints {
   private readonly previousAssignmentsByRoute = new Map<string, Map<string, string>>();
 
   private keydownListener: ((event: KeyboardEvent) => void) | undefined;
-  private layoutShiftListener: (() => void) | undefined;
+  private dismissListener: (() => void) | undefined;
 
   constructor(private readonly options: Required<LinkHintsOptions>) {}
 
@@ -44,7 +44,7 @@ export class LinkHints {
       });
       this.keydownListener = undefined;
     }
-    this.detachLayoutListeners();
+    this.detachActiveListeners();
     this.setState({ status: 'idle', hints: new Map(), typedPrefix: '' });
     this.emitter.clear();
   }
@@ -102,13 +102,13 @@ export class LinkHints {
     this.previousAssignmentsByRoute.set(routeKey, updated);
 
     this.setState({ status: 'active', hints: labels, typedPrefix: '' });
-    this.attachLayoutListeners();
+    this.attachActiveListeners();
   }
 
   cancel(): void {
     if (this.state.status === 'idle') return;
     this.setState({ status: 'idle', hints: new Map(), typedPrefix: '' });
-    this.detachLayoutListeners();
+    this.detachActiveListeners();
   }
 
   handleKey(event: KeyboardEvent): void {
@@ -184,24 +184,28 @@ export class LinkHints {
     return pinned;
   }
 
-  private attachLayoutListeners(): void {
-    this.layoutShiftListener = () => this.cancel();
-    window.addEventListener('scroll', this.layoutShiftListener, {
+  private attachActiveListeners(): void {
+    this.dismissListener = () => this.cancel();
+    window.addEventListener('scroll', this.dismissListener, {
       capture: true,
       passive: true
     });
-    window.addEventListener('resize', this.layoutShiftListener, {
-      passive: true
-    });
+    window.addEventListener('resize', this.dismissListener, { passive: true });
+    window.addEventListener('click', this.dismissListener, { capture: true });
+    window.addEventListener('blur', this.dismissListener);
   }
 
-  private detachLayoutListeners(): void {
-    if (!this.layoutShiftListener) return;
-    window.removeEventListener('scroll', this.layoutShiftListener, {
+  private detachActiveListeners(): void {
+    if (!this.dismissListener) return;
+    window.removeEventListener('scroll', this.dismissListener, {
       capture: true
     });
-    window.removeEventListener('resize', this.layoutShiftListener);
-    this.layoutShiftListener = undefined;
+    window.removeEventListener('resize', this.dismissListener);
+    window.removeEventListener('click', this.dismissListener, {
+      capture: true
+    });
+    window.removeEventListener('blur', this.dismissListener);
+    this.dismissListener = undefined;
   }
 
   private setState(next: LinkHintsState): void {
