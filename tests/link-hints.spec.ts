@@ -193,6 +193,28 @@ describe('createLinkHints', () => {
     expect(document.querySelector('.link-hints-portal')).toBeNull();
   });
 
+  it('numbers duplicate data-hint values top-to-bottom', () => {
+    const a = make('button', { 'data-hint': 'S' }, 'first');
+    const b = make('button', { 'data-hint': 'S' }, 'second');
+    const c = make('button', { 'data-hint': 'S' }, 'third');
+    hints = createLinkHints();
+    hints.activate();
+    expect(hints.getState().hints.get(a)).toBe('S1');
+    expect(hints.getState().hints.get(b)).toBe('S2');
+    expect(hints.getState().hints.get(c)).toBe('S3');
+  });
+
+  it('activates a numbered pin via a digit keypress', () => {
+    const first = make('button', { 'data-hint': 'S' }, 'first');
+    make('button', { 'data-hint': 'S' }, 'second');
+    const onActivate = vi.fn();
+    hints = createLinkHints({ onActivate });
+    hints.activate();
+    pressKey('s');
+    pressKey('1');
+    expect(onActivate).toHaveBeenCalledWith(first);
+  });
+
   it('isClickable override forces an element to be hinted', () => {
     const span = make('span', { id: 'spanny' }, 'span');
     hints = createLinkHints({

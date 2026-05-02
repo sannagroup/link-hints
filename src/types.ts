@@ -32,7 +32,9 @@ export interface LinkHintsOptions {
    * element to pin it, or `undefined` to leave it auto-assigned.
    *
    * The default reads `element.dataset.hint`, so `<a data-hint="OR">`
-   * is pinned to the literal label `OR`.
+   * is pinned to the literal label `OR`. When multiple elements return
+   * the same label, each occurrence is suffixed with a 1-based index in
+   * document order — three `data-hint="S"` items become `S1`, `S2`, `S3`.
    */
   pinnedHint?: (element: HTMLElement) => string | undefined;
 }

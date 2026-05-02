@@ -145,7 +145,7 @@ export class LinkHints {
       });
       return;
     }
-    if (/^[a-zA-Z]$/.test(event.key)) {
+    if (/^[a-zA-Z0-9]$/.test(event.key)) {
       const next = this.state.typedPrefix + event.key.toUpperCase();
       const matches = this.matchingForPrefix(next);
       if (matches.length === 1) {
