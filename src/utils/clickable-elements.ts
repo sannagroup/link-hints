@@ -174,11 +174,6 @@ interface Candidate {
   evaluation: ClickableEvaluation;
 }
 
-/**
- * Returns visible, interactable elements within `root` whose bounding rects
- * intersect the viewport. The detection rules and false-positive / tabindex
- * filtering follow Vimium's `getLocalHintsForElement` algorithm.
- */
 // Ported from vimium/content_scripts/link_hints.js#getAllElements: walks open
 // shadow roots so components built on web components (Lit, Stencil, Shoelace,
 // any `<sl-button>`-style wrapper) still get hinted.
@@ -193,6 +188,11 @@ const getAllElementsIncludingShadowRoots = (root: ParentNode): HTMLElement[] => 
   return collected;
 };
 
+/**
+ * Returns visible, interactable elements within `root` whose bounding rects
+ * intersect the viewport. The detection rules and false-positive / tabindex
+ * filtering follow Vimium's `getLocalHintsForElement` algorithm.
+ */
 export const findClickableElements = (
   root: HTMLElement,
   override?: (element: HTMLElement) => boolean | undefined
