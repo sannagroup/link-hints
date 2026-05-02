@@ -159,6 +159,19 @@ The most common case. Add a 1–3-letter `data-hint` attribute to anything you w
 
 The label space adapts so no auto-assigned label collides with a pinned one.
 
+If multiple elements share the **same** `data-hint` value, each occurrence is suffixed with a 1-based index in document order — useful for repeated rows like search results:
+
+```html
+<li><button data-hint="S">First result</button></li>
+<!-- → S1 -->
+<li><button data-hint="S">Second result</button></li>
+<!-- → S2 -->
+<li><button data-hint="S">Third result</button></li>
+<!-- → S3 -->
+```
+
+Type the prefix (`s`) and then the digit (`1`) to pick a row. Auto-assigned labels stay alphabetic — digits only ever appear as a suffix on a `data-hint` you supplied.
+
 ### 2. Custom activation key
 
 ```ts
