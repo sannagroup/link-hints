@@ -175,6 +175,23 @@ interface Candidate {
 }
 
 /**
+ * Walks open shadow roots so components built on web components (Lit,
+ * Stencil, Shoelace, any `<sl-button>`-style wrapper) still get hinted.
+ *
+ * Ported from `vimium/content_scripts/link_hints.js#getAllElements`.
+ */
+const getAllElementsIncludingShadowRoots = (root: ParentNode): HTMLElement[] => {
+  const collected: HTMLElement[] = [];
+  for (const element of Array.from(root.querySelectorAll<HTMLElement>('*'))) {
+    collected.push(element);
+    if (element.shadowRoot) {
+      collected.push(...getAllElementsIncludingShadowRoots(element.shadowRoot));
+    }
+  }
+  return collected;
+};
+
+/**
  * Returns visible, interactable elements within `root` whose bounding rects
  * intersect the viewport. The detection rules and false-positive / tabindex
  * filtering follow Vimium's `getLocalHintsForElement` algorithm.
@@ -183,7 +200,7 @@ export const findClickableElements = (
   root: HTMLElement,
   override?: (element: HTMLElement) => boolean | undefined
 ): HTMLElement[] => {
-  const all = Array.from(root.querySelectorAll<HTMLElement>('*'));
+  const all = getAllElementsIncludingShadowRoots(root);
 
   const candidates: Candidate[] = [];
   for (const element of all) {

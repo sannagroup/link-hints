@@ -143,6 +143,35 @@ describe('createLinkHints', () => {
     expect(hints.getState().status).toBe('idle');
   });
 
+  it('Backspace removes the last typed character', () => {
+    make('button', { id: 'a' }, 'A');
+    make('button', { id: 'b' }, 'B');
+    make('button', { id: 'c' }, 'C');
+    // Two-char alphabet forces multi-char labels so the first keypress
+    // narrows the set instead of immediately activating.
+    hints = createLinkHints({ hintChars: 'ab' });
+    hints.activate();
+
+    pressKey('a');
+    expect(hints.getState().status).toBe('active');
+    expect(hints.getState().typedPrefix).toBe('A');
+
+    pressKey('Backspace');
+    expect(hints.getState().status).toBe('active');
+    expect(hints.getState().typedPrefix).toBe('');
+  });
+
+  it('Backspace on an empty prefix exits hint mode', () => {
+    make('button', { id: 'a' }, 'A');
+    hints = createLinkHints();
+    hints.activate();
+    expect(hints.getState().typedPrefix).toBe('');
+
+    pressKey('Backspace');
+
+    expect(hints.getState().status).toBe('idle');
+  });
+
   it('Escape cancels', () => {
     make('button', { id: 'a' }, 'A');
     hints = createLinkHints();

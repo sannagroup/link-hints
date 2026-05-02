@@ -139,6 +139,10 @@ export class LinkHints {
       return;
     }
     if (event.key === 'Backspace') {
+      if (this.state.typedPrefix.length === 0) {
+        this.cancel();
+        return;
+      }
       this.setState({
         ...this.state,
         typedPrefix: this.state.typedPrefix.slice(0, -1)

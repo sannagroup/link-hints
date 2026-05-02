@@ -52,10 +52,18 @@ const make = <K extends keyof HTMLElementTagNameMap>(
   return element;
 };
 
+const collectAllElements = (root: ParentNode): HTMLElement[] => {
+  const all: HTMLElement[] = [];
+  for (const element of Array.from(root.querySelectorAll<HTMLElement>('*'))) {
+    all.push(element);
+    if (element.shadowRoot) all.push(...collectAllElements(element.shadowRoot));
+  }
+  return all;
+};
+
 const stubElementFromPoint = (): void => {
   document.elementFromPoint = (x: number, y: number): Element | null => {
-    const elements = Array.from(document.querySelectorAll<HTMLElement>('*'));
-    for (const element of elements) {
+    for (const element of collectAllElements(document)) {
       const rect = element.getBoundingClientRect();
       if (
         rect.width > 0 &&
@@ -85,6 +93,19 @@ describe('findClickableElements', () => {
     const result = findClickableElements(document.body);
     expect(result).toHaveLength(1);
     expect(result[0]?.id).toBe('link');
+  });
+
+  it('descends into open shadow roots to find clickables', () => {
+    const host = make('div', { id: 'host' });
+    const shadow = host.attachShadow({ mode: 'open' });
+    const shadowButton = document.createElement('button');
+    shadowButton.id = 'inside-shadow';
+    shadow.appendChild(shadowButton);
+    stubRect(shadowButton, { top: 100, bottom: 124, height: 24 });
+
+    const result = findClickableElements(document.body);
+
+    expect(result.map((element) => element.id)).toContain('inside-shadow');
   });
 
   it('finds enabled buttons but skips disabled ones', () => {
