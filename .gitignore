@@ -7,3 +7,5 @@ dist
 coverage
 .idea
 .vscode/settings.json
+storybook-static
+*storybook.log
