@@ -1,5 +1,16 @@
 # @sannagroup/link-hints
 
+## 0.4.0
+
+### Minor Changes
+
+- 69921ee: Hint detection now descends into open shadow roots, mirroring Vimium's `getAllElements`. Components built on web components (Lit, Stencil, Shoelace, custom `<sl-button>`-style wrappers) now receive hints. Closed shadow roots remain inaccessible by spec.
+
+### Patch Changes
+
+- 69921ee: Pressing Backspace on an empty typed prefix now exits hint mode, matching Vimium hint mode's behaviour. Previously it was a silent no-op.
+- 1d72ccc: Dismiss the active hint overlay on outside click and window blur, mirroring Vimium hint mode's `exitOnClick` and `exitOnBlur`.
+
 ## 0.3.0
 
 ### Minor Changes
