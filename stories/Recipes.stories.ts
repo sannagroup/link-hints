@@ -71,6 +71,29 @@ export const PinWithDataHint: Story = {
     )
 };
 
+export const NumberedPins: Story = {
+  name: '1b. Numbered pins for repeated data-hint',
+  render: () =>
+    withLifecycle(
+      shell(`
+        <h2 style="margin-top:0">Numbered pins for repeated <code>data-hint</code></h2>
+        <p style="color:#525252">
+          Multiple list items sharing the same <code>data-hint</code> get a 1-based numeric suffix
+          in document order. Press <kbd>f</kbd>, then <kbd>s</kbd>, then a digit
+          (<kbd>1</kbd>–<kbd>5</kbd>) to pick a row.
+        </p>
+        <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:.5rem;max-width:360px">
+          <li><button data-hint="S" style="width:100%;text-align:left;padding:.5rem .75rem;background:#0ea5e9;color:white;border:none;border-radius:.375rem">First search result</button></li>
+          <li><button data-hint="S" style="width:100%;text-align:left;padding:.5rem .75rem;background:#0ea5e9;color:white;border:none;border-radius:.375rem">Second search result</button></li>
+          <li><button data-hint="S" style="width:100%;text-align:left;padding:.5rem .75rem;background:#0ea5e9;color:white;border:none;border-radius:.375rem">Third search result</button></li>
+          <li><button data-hint="S" style="width:100%;text-align:left;padding:.5rem .75rem;background:#0ea5e9;color:white;border:none;border-radius:.375rem">Fourth search result</button></li>
+          <li><button data-hint="S" style="width:100%;text-align:left;padding:.5rem .75rem;background:#0ea5e9;color:white;border:none;border-radius:.375rem">Fifth search result</button></li>
+        </ul>
+      `),
+      () => createLinkHints()
+    )
+};
+
 export const CustomActivationKey: Story = {
   name: '2. Custom activation key',
   render: () =>

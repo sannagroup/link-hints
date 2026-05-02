@@ -75,13 +75,24 @@ describe('assignHintLabels', () => {
     expect(assignHintLabels([]).size).toBe(0);
   });
 
-  it('throws on a duplicate pinned label', () => {
-    const [a, b] = makeButtons(['A', 'B']);
+  it('numbers duplicate pinned labels in iteration order', () => {
+    const [a, b, c] = makeButtons(['A', 'B', 'C']);
     const pinned = new Map<HTMLElement, string>([
-      [a!, 'XY'],
-      [b!, 'xy']
+      [a!, 'S'],
+      [b!, 's'],
+      [c!, 'S']
     ]);
-    expect(() => assignHintLabels([a!, b!], { pinned })).toThrow(/duplicate pinned hint/i);
+    const result = assignHintLabels([a!, b!, c!], { pinned });
+    expect(result.get(a!)).toBe('S1');
+    expect(result.get(b!)).toBe('S2');
+    expect(result.get(c!)).toBe('S3');
+  });
+
+  it('leaves a singleton pinned label unsuffixed', () => {
+    const [a, b] = makeButtons(['A', 'B']);
+    const pinned = new Map<HTMLElement, string>([[a!, 'OP']]);
+    const result = assignHintLabels([a!, b!], { pinned });
+    expect(result.get(a!)).toBe('OP');
   });
 
   it('throws on a malformed pinned label', () => {

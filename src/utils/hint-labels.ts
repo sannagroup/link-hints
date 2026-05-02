@@ -36,18 +36,30 @@ const generateLabels = (length: number, chars: string): string[] => {
 };
 
 const validatePinned = (pinned: ReadonlyMap<HTMLElement, string>): Map<HTMLElement, string> => {
-  const validated = new Map<HTMLElement, string>();
-  const seen = new Set<string>();
+  const normalized: Array<[HTMLElement, string]> = [];
+  const counts = new Map<string, number>();
   for (const [element, label] of pinned) {
     const upper = label.toUpperCase();
     if (!/^[A-Z]{1,3}$/.test(upper)) {
       throw new Error(`invalid pinned hint "${label}": must be 1-3 letters`);
     }
-    if (seen.has(upper)) {
-      throw new Error(`duplicate pinned hint "${upper}"`);
+    normalized.push([element, upper]);
+    counts.set(upper, (counts.get(upper) ?? 0) + 1);
+  }
+
+  // Suffix repeated labels with a 1-based index in iteration order, so multiple
+  // `data-hint="S"` elements become `S1`, `S2`, … top-to-bottom.
+  const validated = new Map<HTMLElement, string>();
+  const counters = new Map<string, number>();
+  for (const [element, upper] of normalized) {
+    const total = counts.get(upper) ?? 0;
+    if (total > 1) {
+      const next = (counters.get(upper) ?? 0) + 1;
+      counters.set(upper, next);
+      validated.set(element, `${upper}${next}`);
+    } else {
+      validated.set(element, upper);
     }
-    seen.add(upper);
-    validated.set(element, upper);
   }
   return validated;
 };
