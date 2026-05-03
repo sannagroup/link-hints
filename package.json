@@ -1,6 +1,6 @@
 {
   "name": "@sannagroup/link-hints",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "description": "Vimium-style keyboard link-hint navigation for any web page. Pure JS / TypeScript, framework-free.",
   "license": "MIT",
   "type": "module",
