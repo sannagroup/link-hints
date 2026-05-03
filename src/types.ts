@@ -12,8 +12,17 @@ export interface LinkHintsOptions {
   /** Key that activates hint mode while idle. Default: `'f'`. */
   activationKey?: string;
 
-  /** Character set for generated labels. Alphabetic only. Default: Vimium's home-row weighted set. */
-  hintChars?: string;
+  /**
+   * Character set for generated labels. Alphabetic only.
+   *
+   * Accepts:
+   * - a string — replaces the default set outright (e.g. `'asdfghjkl'`)
+   * - `{ include: string }` — adds these characters to the default set
+   * - `{ exclude: string }` — drops these characters from the default set
+   *
+   * Default: Vimium's home-row weighted set (`'sadfjklewcmpgh'`).
+   */
+  hintChars?: string | { include: string } | { exclude: string };
 
   /**
    * Called when the user types a label that uniquely matches a hint.

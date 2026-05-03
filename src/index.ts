@@ -45,5 +45,6 @@ export const createLinkHints = (options: LinkHintsOptions = {}): LinkHintsHandle
 export type { LinkHintsHandle, LinkHintsOptions, LinkHintsState };
 export { simulateClick, performTargetAction } from './utils/click-simulator.js';
 export { findClickableElements } from './utils/clickable-elements.js';
-export { assignHintLabels, DEFAULT_HINT_CHARS } from './utils/hint-labels.js';
+export { assignHintLabels, DEFAULT_HINT_CHARS, resolveHintChars } from './utils/hint-labels.js';
+export type { HintCharsOption } from './utils/hint-labels.js';
 export { getStableElementKey } from './utils/stable-element-key.js';
