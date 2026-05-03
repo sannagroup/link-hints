@@ -13,21 +13,22 @@
 .link-hints-badge {
   --link-hints-bg: oklch(0.66 0.18 39); /* tailwind orange-600 */
   --link-hints-fg: white;
-  --link-hints-ring: rgba(124, 45, 18, 0.4);
+  --link-hints-ring: rgba(67, 20, 7, 0.85);
   --link-hints-radius: 0.125rem;
-  --link-hints-font: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  --link-hints-size: 10px;
+  --link-hints-font: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', system-ui, sans-serif;
+  --link-hints-size: 11px;
 
   position: absolute;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 2px 4px;
+  padding: 0 4px;
+  height: 16px;
   font-family: var(--link-hints-font);
   font-size: var(--link-hints-size);
-  font-weight: 600;
-  line-height: 1;
-  letter-spacing: -0.01em;
+  font-weight: 700;
+  line-height: 16px;
+  letter-spacing: 0.01em;
   text-transform: uppercase;
   color: var(--link-hints-fg);
   background: var(--link-hints-bg);
@@ -37,6 +38,9 @@
   user-select: none;
   transform: translate(-4px, -50%);
   white-space: nowrap;
+  -webkit-font-smoothing: subpixel-antialiased;
+  -moz-osx-font-smoothing: auto;
+  text-rendering: geometricPrecision;
 }
 
 .link-hints-badge__typed {
