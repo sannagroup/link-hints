@@ -276,14 +276,14 @@ document.querySelector('#help-button')?.addEventListener('click', () => {
 
 ### `createLinkHints(options?): LinkHintsHandle`
 
-| Option          | Type                           | Default                     | Description                           |
-| --------------- | ------------------------------ | --------------------------- | ------------------------------------- |
-| `activationKey` | `string`                       | `'f'`                       | Key that toggles hint mode on.        |
-| `root`          | `HTMLElement`                  | `document.body`             | Subtree to scan for clickables.       |
-| `hintChars`     | `string`                       | `'sadfjklewcmpgh'`          | Characters used in generated labels.  |
-| `onActivate`    | `(el) => void`                 | full mouse + click sequence | Action when a label uniquely matches. |
-| `isClickable`   | `(el) => boolean \| undefined` | —                           | Override the default heuristic.       |
-| `pinnedHint`    | `(el) => string \| undefined`  | reads `data-hint`           | Programmatic pin source.              |
+| Option          | Type                                   | Default                     | Description                                                                                                                                 |
+| --------------- | -------------------------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `activationKey` | `string`                               | `'f'`                       | Key that toggles hint mode on.                                                                                                              |
+| `root`          | `HTMLElement`                          | `document.body`             | Subtree to scan for clickables.                                                                                                             |
+| `hintChars`     | `string \| { include } \| { exclude }` | `'sadfjklewcmpgh'`          | Characters used in generated labels. A string replaces the default set; `{ include: 'xy' }` adds to it; `{ exclude: 's' }` removes from it. |
+| `onActivate`    | `(el) => void`                         | full mouse + click sequence | Action when a label uniquely matches.                                                                                                       |
+| `isClickable`   | `(el) => boolean \| undefined`         | —                           | Override the default heuristic.                                                                                                             |
+| `pinnedHint`    | `(el) => string \| undefined`          | reads `data-hint`           | Programmatic pin source.                                                                                                                    |
 
 ### `LinkHintsHandle`
 

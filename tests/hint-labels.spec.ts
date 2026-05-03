@@ -1,5 +1,5 @@
 import { describe, expect, it, beforeEach } from 'vitest';
-import { assignHintLabels } from '../src/utils/hint-labels';
+import { assignHintLabels, resolveHintChars, DEFAULT_HINT_CHARS } from '../src/utils/hint-labels';
 
 const makeButtons = (texts: string[]): HTMLElement[] =>
   texts.map((text) => {
@@ -111,5 +111,62 @@ describe('assignHintLabels', () => {
     expect(() => assignHintLabels(elements, { hintChars: 'ab' })).toThrow(
       /ran out of hint labels/i
     );
+  });
+
+  it('accepts hintChars as `{ include }` and adds to the default set', () => {
+    const elements = makeButtons(Array.from({ length: 16 }, (_v, i) => `b${i}`));
+    const result = assignHintLabels(elements, { hintChars: { include: 'xy' } });
+    const seen = new Set<string>();
+    for (const label of result.values()) {
+      for (const character of label) seen.add(character.toLowerCase());
+    }
+    expect(seen.has('x')).toBe(true);
+    expect(seen.has('y')).toBe(true);
+    expect(seen.has('s')).toBe(true);
+  });
+
+  it('include skips characters already in the default set', () => {
+    expect(resolveHintChars({ include: 'sa' })).toBe(DEFAULT_HINT_CHARS);
+  });
+
+  it('accepts hintChars as `{ exclude }` and drops the listed characters', () => {
+    const elements = makeButtons(Array.from({ length: 8 }, (_v, i) => `b${i}`));
+    const result = assignHintLabels(elements, { hintChars: { exclude: 's' } });
+    for (const label of result.values()) {
+      expect(label.toLowerCase()).not.toContain('s');
+    }
+  });
+
+  it('exclude is case-insensitive', () => {
+    const elements = makeButtons(['A']);
+    const result = assignHintLabels(elements, { hintChars: { exclude: 'S' } });
+    for (const label of result.values()) {
+      expect(label.toLowerCase()).not.toContain('s');
+    }
+  });
+
+  it('throws when exclude removes every character', () => {
+    const elements = makeButtons(['A']);
+    expect(() =>
+      assignHintLabels(elements, { hintChars: { exclude: DEFAULT_HINT_CHARS } })
+    ).toThrow(/alphabetic/i);
+  });
+});
+
+describe('resolveHintChars', () => {
+  it('returns the default when undefined', () => {
+    expect(resolveHintChars(undefined)).toBe(DEFAULT_HINT_CHARS);
+  });
+
+  it('returns a plain string as-is', () => {
+    expect(resolveHintChars('xyz')).toBe('xyz');
+  });
+
+  it('appends `include` characters to the default set', () => {
+    expect(resolveHintChars({ include: 'xy' })).toBe(`${DEFAULT_HINT_CHARS}xy`);
+  });
+
+  it('strips excluded characters from the default set, preserving order', () => {
+    expect(resolveHintChars({ exclude: 's' })).toBe('adfjklewcmpgh');
   });
 });

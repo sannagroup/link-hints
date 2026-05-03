@@ -64,11 +64,40 @@ const validatePinned = (pinned: ReadonlyMap<HTMLElement, string>): Map<HTMLEleme
   return validated;
 };
 
+export type HintCharsOption = string | { include: string } | { exclude: string };
+
+/**
+ * Resolves a `hintChars` option into a concrete character string. A plain
+ * string replaces the default set outright. `{ include }` appends characters
+ * to `DEFAULT_HINT_CHARS` (skipping any already present); `{ exclude }`
+ * removes characters from it. Both preserve the home-row ordering of the
+ * default set.
+ */
+export const resolveHintChars = (option: HintCharsOption | undefined): string => {
+  if (option === undefined) return DEFAULT_HINT_CHARS;
+  if (typeof option === 'string') return option;
+  if ('include' in option) {
+    const present = new Set(DEFAULT_HINT_CHARS.toLowerCase());
+    let result = DEFAULT_HINT_CHARS;
+    for (const character of option.include) {
+      const lower = character.toLowerCase();
+      if (present.has(lower)) continue;
+      present.add(lower);
+      result += character;
+    }
+    return result;
+  }
+  const excluded = new Set(option.exclude.toLowerCase());
+  return Array.from(DEFAULT_HINT_CHARS)
+    .filter((character) => !excluded.has(character.toLowerCase()))
+    .join('');
+};
+
 export interface AssignHintLabelsOptions {
   /** Element to literal-label mapping. Reserved together with their prefixes. */
   pinned?: ReadonlyMap<HTMLElement, string>;
   /** Character set used for generated labels. Default: `DEFAULT_HINT_CHARS`. */
-  hintChars?: string;
+  hintChars?: HintCharsOption;
 }
 
 /**
@@ -83,7 +112,7 @@ export const assignHintLabels = (
 ): Map<HTMLElement, string> => {
   const pinned = validatePinned(options.pinned ?? new Map());
   const reserved = new Set(pinned.values());
-  const chars = (options.hintChars ?? DEFAULT_HINT_CHARS).toUpperCase();
+  const chars = resolveHintChars(options.hintChars).toUpperCase();
   if (!/^[A-Z]+$/.test(chars)) {
     throw new Error('hintChars must contain alphabetic characters only');
   }
